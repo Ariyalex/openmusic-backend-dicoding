@@ -35,7 +35,21 @@ class SongsController {
 
   async getSongs(req, res, next) {
     try {
-      const songs = await this.songsModel.findAll();
+      const { title, performer } = req.query;
+      let songs = await this.songsModel.findAll();
+
+      if (title !== undefined) {
+        songs = songs.filter((song) =>
+          song.title.toLowerCase().includes(title.toLowerCase())
+        );
+      }
+
+      if (performer !== undefined) {
+        songs = songs.filter((song) =>
+          song.performer.toLowerCase().includes(performer.toLowerCase())
+        );
+      }
+
       res.status(200).json({
         status: "success",
         data: { songs },

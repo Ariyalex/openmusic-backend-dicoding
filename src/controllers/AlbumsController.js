@@ -2,10 +2,12 @@ const { nanoid } = require("nanoid");
 const AlbumsModel = require("../models/AlbumsModel");
 const NotFoundError = require("../exceptions/NotFoundError");
 const autoBind = require("auto-bind");
+const SongsModel = require("../models/SongsModel");
 
 class AlbumsController {
   constructor() {
     this.albumsModel = new AlbumsModel();
+    this.songsModel = new SongsModel();
 
     autoBind(this);
   }
@@ -41,6 +43,7 @@ class AlbumsController {
     try {
       const { id } = req.params;
       const album = await this.albumsModel.findById(id);
+      const songs = await this.songsModel.findByAlbumId(id);
 
       if (!album) {
         throw new NotFoundError("Album tidak ditemukan");
@@ -48,7 +51,12 @@ class AlbumsController {
 
       res.status(200).json({
         status: "success",
-        data: { album },
+        data: {
+          album: {
+            ...album,
+            songs,
+          },
+        },
       });
     } catch (error) {
       next(error);

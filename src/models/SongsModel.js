@@ -22,6 +22,12 @@ class SongsModel {
     return result.rows;
   }
 
+  async findByAlbumId(albumId) {
+    const query = "select id, title, performer from songs where album_id = $1";
+    const result = await db.query(query, [albumId]);
+    return result.rows;
+  }
+
   async findById(id) {
     const query =
       "select id, title, year, genre, performer, duration, album_id from songs where id = $1";
