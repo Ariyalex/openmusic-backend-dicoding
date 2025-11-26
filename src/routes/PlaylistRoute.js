@@ -58,4 +58,10 @@ playlistRouter.delete(
   asyncHandler(playlistController.deletePlaylistSongController)
 );
 
+playlistRouter.get(
+  "/:id/activities",
+  auth,
+  asyncHandler(playlistController.getPlaylistSongActivitiesController)
+);
+
 module.exports = playlistRouter;

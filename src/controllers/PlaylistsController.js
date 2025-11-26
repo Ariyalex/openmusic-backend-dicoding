@@ -66,6 +66,8 @@ class PlaylistsController {
       songId: newSongId,
     });
 
+    await this._playlistModel.createActivity(id, newSongId, userId, "add");
+
     return success(res, {
       status: 201,
       message: "Berhasi menambahkan lagu ke playlist",
@@ -103,9 +105,31 @@ class PlaylistsController {
 
     await this._playlistModel.deletePlaylistSong(id, songId);
 
+    await this._playlistModel.createActivity(id, songId, userId, "delete");
+
     return success(res, {
       status: 200,
       message: "Berhasil menghapus lagu dari playlist",
+    });
+  }
+
+  async getPlaylistSongActivitiesController(req, res) {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    await this._playlistModel.verifyPlaylistAccess(id, userId);
+
+    const playlist = await this._playlistModel.getPlaylist(id);
+    if (!playlist) throw new NotFoundError("Playlist tidak ditemukan");
+
+    const activities = await this._playlistModel.getPlaylistActivities(id);
+
+    return success(res, {
+      status: 200,
+      data: {
+        playlistId: playlist.id,
+        activities,
+      },
     });
   }
 }

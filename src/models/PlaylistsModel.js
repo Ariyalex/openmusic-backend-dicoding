@@ -97,6 +97,31 @@ class PlaylistModel {
       );
   }
 
+  async createActivity(playlistId, songId, userId, action) {
+    const id = `activity-${nanoid(16)}`;
+    const { rows } = await this._db.query(
+      `insert into playlist_song_activities(id, playlist_id, song_id, user_id, action) values($1, $2, $3, $4, $5) returning id`,
+      [id, playlistId, songId, userId, action]
+    );
+
+    if (!rows.length)
+      throw new InvariantError("gagal membuat playlist activities");
+  }
+
+  async getPlaylistActivities(playlistId) {
+    const { rows } = await this._db.query(
+      `select u.username, s.title, a.action, a.time
+      from playlist_song_activities a
+      left join users u on a.user_id = u.id
+      left join songs s on a.song_id = s.id
+      where a.playlist_id = $1
+      order by a.time ASC`,
+      [playlistId]
+    );
+
+    return rows || [];
+  }
+
   async verifyPlaylistOwner(id, owner) {
     const { rows } = await this._db.query(
       `select * from playlists where id = $1`,
