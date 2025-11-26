@@ -10,7 +10,7 @@
 exports.up = (pgm) => {
   pgm.createTable("playlists", {
     id: {
-      type: "serial",
+      type: "varchar(50)",
       notNull: true,
       primaryKey: true,
     },
@@ -19,7 +19,7 @@ exports.up = (pgm) => {
       notNull: true,
     },
     owner: {
-      type: "uuid",
+      type: "varchar(50)",
       notNull: true,
     },
   });

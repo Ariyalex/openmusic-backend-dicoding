@@ -16,7 +16,7 @@ exports.up = (pgm) => {
       default: pgm.func("gen_random_uuid()"),
     },
     user_id: {
-      type: "uuid",
+      type: "varchar(50)",
       notNull: true,
       references: "users(id)",
       onDelete: "CASCADE",

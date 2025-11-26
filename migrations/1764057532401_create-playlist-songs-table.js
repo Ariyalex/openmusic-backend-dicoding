@@ -10,12 +10,12 @@
 exports.up = (pgm) => {
   pgm.createTable("playlist_songs", {
     id: {
-      type: "serial",
+      type: "varchar(50)",
       primaryKey: true,
       notNull: true,
     },
     playlist_id: {
-      type: "integer",
+      type: "varchar(50)",
       notNull: true,
     },
     song_id: {

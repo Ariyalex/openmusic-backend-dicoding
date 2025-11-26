@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const NotFoundError = require("../exceptions/NotFoundError");
 const AuthenticationError = require("../exceptions/AuthenticationError");
 const autoBind = require("auto-bind");
+const { nanoid } = require("nanoid");
 
 class UserModel {
   constructor() {
@@ -14,10 +15,11 @@ class UserModel {
   async addUser({ username, password, fullname }) {
     await this.verifyNewUsername(username);
 
+    const id = `user-${nanoid(16)}`;
     const hashedPassword = await bcrypt.hash(password, 10);
     const { rows } = await this.db.query(
-      "insert into users(username, password, fullname) values($1, $2, $3) returning id",
-      [username, hashedPassword, fullname]
+      "insert into users(id, username, password, fullname) values($1, $2, $3, $4) returning id",
+      [id, username, hashedPassword, fullname]
     );
 
     if (!rows.length) {
@@ -74,7 +76,7 @@ class UserModel {
     return id;
   }
 
-  async getUserUsername(username) {
+  async getUsersUsername(username) {
     const { rows } = await this.db.query(
       `select id, username, fullname from users where username like $1`,
       [`%${username}%`]

@@ -10,17 +10,16 @@
 exports.up = (pgm) => {
   pgm.createTable("collaborations", {
     id: {
-      type: "uuid",
+      type: "varchar(50)",
       primaryKey: true,
       notNull: true,
-      default: pgm.func("gen_random_uuid()"),
     },
     playlist_id: {
-      type: "integer",
+      type: "varchar(50)",
       notNull: true,
     },
     user_id: {
-      type: "uuid",
+      type: "varchar(50)",
       notNull: true,
     },
   });
